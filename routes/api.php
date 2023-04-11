@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('kelas', 'KelasController@index')->name('kelas.index');
+Route::get('kelas/{id}', 'KelasController@show')->name('kelas.show');
+Route::post('kelas', 'KelasController@store')->name('kelas.store');
+Route::put('kelas/{id}', 'KelasController@update')->name('kelas.update');;
