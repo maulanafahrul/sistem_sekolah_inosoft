@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Siswa;
+use App\Models\Mata_pelajaran;
 use Illuminate\Http\Request;
 
-class SiswaController extends Controller
+class MataPelajaranController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +14,7 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $kelas = siswa::all();
-        return response()->json([
-            'data' => $kelas
-        ]);
+        //
     }
 
     /**
@@ -25,11 +22,10 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // gak butuh untuk sekarang 
-    // public function create()
-    // {
-    //     //
-    // }
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,29 +35,16 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = $request->validate([
-            'nama' => 'required',
-            
-        ]);
-
-        $siswa = Siswa::create([
-            'nama' => $validation['nama'],
-            'kelas_id' => $request->kelas_id
-        ]);
-
-        return response()->json([
-            'message' => 'Data kelas berhasil disimpan',
-            'data' => $siswa
-        ]);
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Siswa  $siswa
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function show(Siswa $siswa)
+    public function show(Mata_pelajaran $mata_pelajaran)
     {
         //
     }
@@ -69,10 +52,10 @@ class SiswaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Siswa  $siswa
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function edit(Siswa $siswa)
+    public function edit(Mata_pelajaran $mata_pelajaran)
     {
         //
     }
@@ -81,10 +64,10 @@ class SiswaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Siswa  $siswa
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, Mata_pelajaran $mata_pelajaran)
     {
         //
     }
@@ -92,10 +75,10 @@ class SiswaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Siswa  $siswa
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Siswa $siswa)
+    public function destroy(Mata_pelajaran $mata_pelajaran)
     {
         //
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Soal 1:   Menampilkan list kelas yang ada  
-Route::get('kelas', [KelasController::class, 'index']);                 
+Route::get('kelas', [KelasController::class, 'index']);    
+//Soal 3:   Menyimpan data kelas baru
+Route::post('kelas/store', [KelasController::class, 'store']);  
+//Soal 5:   Menampilkan list siswa yang ada       
+Route::get('siswa', [SiswaController::class, 'index']);                 

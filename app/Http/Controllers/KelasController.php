@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\kelas;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 
 
@@ -26,10 +27,11 @@ class KelasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    // gak butuh untuk sementara
+    // public function create()
+    // {
+    //     //
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +41,19 @@ class KelasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $request->validate([
+            'kelas' => 'required'
+        ]);
+
+        $kelas = Kelas::create([
+            'kelas' => $validation['kelas']
+        ]);
+
+        return response()->json([
+            'message' => 'Data kelas berhasil disimpan',
+            'data' => $kelas
+        ]);
+
     }
 
     /**
@@ -48,9 +62,19 @@ class KelasController extends Controller
      * @param  \App\Models\kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function show(kelas $kelas)
+    public function show(Kelas $kelas, Siswa $siswa)
     {
-        //
+        $resultKelas = Kelas::where('_id',$kelas->id)->get();
+        $resultSiswa = Siswa::where('kelas_id', $siswa->kelas_id)->get();    
+        foreach ($resultKelas as $k) {
+            $response = [
+                'id' => $k->_id, 
+                'kelas' => $k->kelas,
+                'siswa' => $resultSiswa
+            ];
+        }
+        
+        return response()->json(['data' => $response]);
     }
 
     /**
@@ -59,10 +83,11 @@ class KelasController extends Controller
      * @param  \App\Models\kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function edit(kelas $kelas)
-    {
-        //
-    }
+    // gak butuh untuk sementara 
+    // public function edit(kelas $kelas)
+    // {
+    //     //
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -73,7 +98,14 @@ class KelasController extends Controller
      */
     public function update(Request $request, kelas $kelas)
     {
-        //
+        $result = Kelas::find($kelas->id)->first();
+        $result->kelas = $request->kelas;
+        $kelas->save();
+
+        return response()->json([
+            'message' => 'Data kelas berhasil diubah',
+            'data' => $kelas
+        ]);
     }
 
     /**
@@ -84,6 +116,14 @@ class KelasController extends Controller
      */
     public function destroy(kelas $kelas)
     {
-        //
+        $kelas = Kelas::find($kelas->id)->first();
+
+        $kelas->delete();
+
+        return response()->json([
+            'code' => '200',
+            'message' => 'Data kelas berhasil dihapus',
+            'data' => $kelas
+        ]);
     }
 }
