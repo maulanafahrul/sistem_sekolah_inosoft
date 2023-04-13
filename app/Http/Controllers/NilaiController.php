@@ -1,14 +1,37 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\kelas;
+
+use App\Models\Mata_pelajaran;
 use App\Models\Nilai;
-use App\Models\Siswa;
-use App\Models\Mata_Pelajaran;
+
 use Illuminate\Http\Request;
 
 class NilaiController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $nilai = Nilai::all();
+
+        return response()->json([
+            'data' => $nilai
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    // public function create()
+    // {
+    //     //
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -16,58 +39,97 @@ class NilaiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, siswa $id)
-    {
-        $siswa = siswa::find($id);
-    if ($siswa) {
-        $kelas = kelas::find($siswa->kelas_id);
-        if ($kelas) {
-            $nilaiLatihan = collect($siswa->nilai_latihan)->avg();
-            $nilaiUlanganHarian = collect($siswa->nilai_ulangan_harian)->avg();
-            $nilaiUlanganTengahSemester = $siswa->nilai_ulangan_tengah_semester;
-            $nilaiUlanganSemester = $siswa->nilai_ulangan_semester;
-            $nilaiAkhir = 0.15 * $nilaiLatihan + 0.2 * $nilaiUlanganHarian + 0.25 * $nilaiUlanganTengahSemester + 0.4 * $nilaiUlanganSemester;
 
-            $detailSiswa = [
-                'nama' => $siswa->nama,
-                'nisn' => $siswa->nisn,
-                'kelas' => $kelas->nama,
-                'jurusan' => $kelas->jurusan,
-                'nilai_latihan' => $siswa->nilai_latihan,
-                'nilai_rata_rata_latihan' => $nilaiLatihan,
-                'nilai_ulangan_harian' => $siswa->nilai_ulangan_harian,
-                'nilai_rata_rata_ulangan_harian' => $nilaiUlanganHarian,
-                'nilai_ulangan_tengah_semester' => $nilaiUlanganTengahSemester,
-                'nilai_ulangan_semester' => $nilaiUlanganSemester,
-                'nilai_akhir' => $nilaiAkhir
-            ];
-            return response()->json($detailSiswa);
-        } else {
-            return response()->json(['message' => 'Kelas tidak ditemukan'], 404);
-        }
-    } else {
-        return response()->json(['message' => 'Siswa tidak ditemukan'], 404);
-    }
+    public function store(Request $request)
+    {
+
+        $nilai = Nilai::create([
+            'siswa_id' => $request->siswa_id,
+            'pelajaran_id' => $request->pelajaran_id,
+            'latihan_1' => $request->latihan_1,
+            'latihan_2' => $request->latihan_2,
+            'latihan_3' => $request->latihan_3,
+            'latihan_4' => $request->latihan_4,
+            'ulangan_harian_1' => $request->ulangan_harian_1,
+            'ulangan_harian_2' => $request->ulangan_harian_2,
+            'ulangan_tengah_semester' => $request->ulangan_tengah_semester,
+            'ulangan_semester' => $request->ulangan_semester,
+        ]);
+
+        return response()->json(['data' => $nilai]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\nilai  $nilai
+     * @param  \App\Models\Nilai  $nilai
      * @return \Illuminate\Http\Response
      */
-    public function show(nilai $nilai, siswa $siswa_id, mata_Pelajaran $mata_Pelajaran)
+    public function show($id)
     {
-        $siswa = siswa::findOrFail($siswa_id);
-        $mata_Pelajaran = Mata_Pelajaran::findOrFail($mata_Pelajaran);
-        $nilai = Nilai::where('siswa_id', $siswa_id)->where('mata_pelajaran_id', $mata_Pelajaran)->firstOrFail();
-
-        return response()->json([
-            'siswa' => $siswa,
-            'mata_pelajaran' => $mata_Pelajaran,
-            'nilai' => $nilai
-        ]);
+        $result = Nilai::where('pelajaran_id',$id)->get();
+        return response()->json(['data' => $result]);
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Nilai  $nilai
+     * @return \Illuminate\Http\Response
+     */
+    // public function edit(Nilai $nilai)
+    // {
+    //     //
+    // }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Nilai  $nilai
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $mata_pelajaran = Mata_pelajaran::find($id)->get();
+        $nilai = Nilai::where('pelajaran_id',$id)->first();
+
+        $mata_pelajaran->mata_pelajaran = $request->pelajaran;
+            $nilai->siswa_id = $request->siswa_id;
+            $nilai->pelajaran_id = $request->pelajaran_id;
+            $nilai->latihan_1 = $request->latihan_1;
+            $nilai->latihan_2 = $request->latihan_2;
+            $nilai->latihan_3 = $request->latihan_3;
+            $nilai->latihan_4 = $request->latihan_4;
+            $nilai->ulangan_harian_1 = $request->ulangan_harian_1;
+            $nilai->ulangan_harian_2 = $request->ulangan_harian_2;
+            $nilai->ulangan_tengah_semester = $request->ulangan_tengah_semester;
+            $nilai->ulangan_semester = $request->ulangan_semeseter;
+            $nilai->save();
+
+            return response()->json([
+                'code' => '200',
+                'message' => 'Data nilai siswa berhasil diubah',
+                'data' => $nilai
+            ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Nilai  $nilai
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $nilai = Nilai::find($id)->first();
+
+        $nilai->delete();
+
+        return response()->json([
+            'code' => '200',
+            'message' => 'Data nilai siswa berhasil dihapus',
+            'data' => $nilai
+        ]);
+    }
 }

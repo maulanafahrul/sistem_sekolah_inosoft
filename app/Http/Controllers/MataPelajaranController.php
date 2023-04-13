@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\mata_pelajaran;
+use App\Models\Mata_pelajaran;
 use Illuminate\Http\Request;
 
 class MataPelajaranController extends Controller
@@ -14,12 +14,21 @@ class MataPelajaranController extends Controller
      */
     public function index()
     {
-        $mata_Pelajarans = Mata_Pelajaran::all();
-
-        return response()->json($mata_Pelajarans);
+        $mata_pelajaran = mata_pelajaran::all();
+        return response()->json([
+            'data' => $mata_pelajaran
+        ]);
     }
 
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    // public function create()
+    // {
+    //     //
+    // }
     /**
      * Store a newly created resource in storage.
      *
@@ -28,33 +37,33 @@ class MataPelajaranController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'nama' => 'required|string'
+
+        $validation = $request->validate([
+            
         ]);
-
-        $mata_Pelajaran = new Mata_Pelajaran([
-            'nama' => $validatedData['nama']
-        ]);
-
-        $mata_Pelajaran->save();
-
-        return response()->json([
-            'message' => 'Mata Pelajaran berhasil dibuat',
-            'data' => $mata_Pelajaran
-        ], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id 
+
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Mata_pelajaran $mata_pelajaran)
     {
-        $mata_Pelajaran = Mata_Pelajaran::with('siswas')->findOrFail($id);
+        //
+    }
 
-        return response()->json($mata_Pelajaran);
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Mata_pelajaran $mata_pelajaran)
+    {
+        //
     }
 
 
@@ -62,41 +71,25 @@ class MataPelajaranController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id 
+
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Mata_pelajaran $mata_pelajaran)
     {
-        $validatedData = $request->validate([
-            'nama' => 'required|string'
-        ]);
+        //
 
-        $mataPelajaran = Mata_Pelajaran::findOrFail($id);
-
-        $mataPelajaran->nama = $validatedData['nama'];
-
-        $mataPelajaran->save();
-
-        return response()->json([
-            'message' => 'Mata Pelajaran berhasil diupdate',
-            'data' => $mataPelajaran
-        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id 
+
+     * @param  \App\Models\Mata_pelajaran  $mata_pelajaran
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Mata_pelajaran $mata_pelajaran)
     {
-        $siswa = mata_pelajaran::find($id);
-
-        $siswa->delete();
-
-        return response()->json([
-            'message' => 'mata pelajaran berhasil dihapus'
-        ]);
+        //
     }
 }
