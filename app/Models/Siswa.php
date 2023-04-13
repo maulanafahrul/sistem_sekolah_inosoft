@@ -13,5 +13,5 @@ class Siswa extends Model
     protected $connection = 'mongodb';
 	protected $collection = 'siswas';
     protected $guarded = ['id'];
-    protected $fillable = ['nama','kelas_id'];
+    protected $fillable = ['nama','nisn','kelas_id'];
 }

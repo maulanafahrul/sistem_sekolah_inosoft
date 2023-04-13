@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Siswa;
+use App\Models\Nilai;
+use App\Models\siswa;
 use Illuminate\Http\Request;
 
 class SiswaController extends Controller
@@ -14,22 +15,12 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $kelas = siswa::all();
+        $siswa = Siswa::all();
+
         return response()->json([
-            'data' => $kelas
+            'data' => $siswa
         ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // gak butuh untuk sekarang 
-    // public function create()
-    // {
-    //     //
-    // }
 
     /**
      * Store a newly created resource in storage.
@@ -39,18 +30,19 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = $request->validate([
+        $validation =  $request->validate([
             'nama' => 'required',
-            
+            'nisn' => 'required'
         ]);
 
         $siswa = Siswa::create([
             'nama' => $validation['nama'],
+            'nisn' => $validation['nisn'],
             'kelas_id' => $request->kelas_id
         ]);
 
         return response()->json([
-            'message' => 'Data kelas berhasil disimpan',
+            'message' => 'Siswa berhasil ditambahkan',
             'data' => $siswa
         ]);
     }
@@ -58,45 +50,81 @@ class SiswaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Siswa  $siswa
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Siswa $siswa)
+    public function show($id)
     {
-        //
+        $siswa = Siswa::where('_id',$id)->get();
+        $nilai2 = [];
+        $nilai = Nilai::where('siswa_id',$id)->get();
+        foreach ($siswa as $s) {
+            foreach ($nilai as $n) {
+                $nama    = $n->mata_pelajaran_id->mata_pelajaran_id;
+                $latihan = 0.15 * (($n->latihan_1+$n->latihan_2+$n->latihan_3+$n->latihan_4) / 4);
+                $harian  = 0.2 * (($n->ulangan_harian_1+$n->ulangan_harian_2) / 2);
+                $uts     = 0.25 * $n->ulangan_tengah_semester;
+                $uas     = 0.4 * $n->ulangan_semester;
+                $hasil   = $latihan+$harian+$uts+$uas;
+
+                $nilai1  = [
+                    'pelajaran_id' => $n->id,
+                    'pelajaran' => $nama,
+                    'nilai_total' => $hasil
+                ];
+
+                array_push($nilai2, $nilai1);
+            }
+            $response = [
+                'id' => $s->_id,
+                'nama' => $s->nama,
+                'kelas_id' => $s->kelas_id,
+                'nilai' => $nilai2
+            ];
+        }
+        return response()->json([
+            'message' => 'Siswa berhasil ditambahkan',
+            'data' => $response
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Siswa  $siswa
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Siswa $siswa)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
+    * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Siswa  $siswa
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, $id)
     {
-        //
+        $siswa = Siswa::find($id)->first();
+
+        $siswa->nama = $request->nama;
+        $siswa->nisn = $request->nisn;
+        $siswa->kelas_id = $request->kelas_id;
+        $siswa->save();
+
+        return response()->json([
+            'message' => 'Siswa berhasil diupdate',
+            'siswa' => $siswa
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Siswa  $siswa
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Siswa $siswa)
+    public function destroy($id)
     {
-        //
+        $siswa = Siswa::find($id)->first();
+
+        $siswa->delete();
+
+        return response()->json([
+            'message' => 'Siswa berhasil dihapus'
+        ]);
     }
 }

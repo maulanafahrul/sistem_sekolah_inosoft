@@ -14,7 +14,10 @@ class MataPelajaranController extends Controller
      */
     public function index()
     {
-        //
+        $mata_pelajaran = mata_pelajaran::all();
+        return response()->json([
+            'data' => $mata_pelajaran
+        ]);
     }
 
     /**
@@ -22,10 +25,10 @@ class MataPelajaranController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     //
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +38,9 @@ class MataPelajaranController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $request->validate([
+            
+        ]);
     }
 
     /**

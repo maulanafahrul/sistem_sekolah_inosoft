@@ -62,10 +62,11 @@ class KelasController extends Controller
      * @param  \App\Models\kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function show(Kelas $kelas, Siswa $siswa)
+    public function show($id)
     {
-        $resultKelas = Kelas::where('_id',$kelas->id)->get();
-        $resultSiswa = Siswa::where('kelas_id', $siswa->kelas_id)->get();    
+        $resultKelas = Kelas::where('_id',$id)->get();
+        $resultSiswa = Siswa::where('kelas_id', $id)->get(); 
+        $response = [];
         foreach ($resultKelas as $k) {
             $response = [
                 'id' => $k->_id, 
@@ -93,30 +94,28 @@ class KelasController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, kelas $kelas)
+    public function update(Request $request, $id)
     {
-        $result = Kelas::find($kelas->id)->first();
+        $result = Kelas::find($id)->first();
         $result->kelas = $request->kelas;
-        $kelas->save();
+        $result->save();
 
         return response()->json([
             'message' => 'Data kelas berhasil diubah',
-            'data' => $kelas
+            'data' => $result
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function destroy(kelas $kelas)
+    public function destroy($id)
     {
-        $kelas = Kelas::find($kelas->id)->first();
+        $kelas = Kelas::find($id)->first();
 
         $kelas->delete();
 
